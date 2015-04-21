@@ -12,6 +12,7 @@ FIND_PACKAGE(OpenSceneGraph)
 FIND_PACKAGE(osg)
 FIND_PACKAGE(osgDB)
 FIND_PACKAGE(osgGA)
+FIND_PACKAGE(osgText)
 FIND_PACKAGE(osgViewer)
 FIND_PACKAGE(osgUtil)
 FIND_PACKAGE(OpenThreads)
@@ -72,7 +73,7 @@ if(WIN32 AND NOT APPLE)
 	)
 	
 	
-    target_link_libraries(HCI571_Ray-Intersection-Test ${OPENGL_LIBRARIES} ${OSG_LIBS} ${OpenCV_LIBS} ${ART_LIBS})
+    target_link_libraries(HCI571_Ray-Intersection-Test ${OPENGL_LIBRARIES} ${OSG_LIBS} ${OpenCV_LIBS} )
 else()
 	set(OSG_LIBS
 		${OSG_LIBRARY}
@@ -81,6 +82,7 @@ else()
 		${OSGVIEWER_LIBRARY}
 		${OSGUTIL_LIBRARY}
 		${OPENTHREADS_LIBRARY}
+        ${OSGTEXT_LIBRARY}
 	)
 	
 	

@@ -2,6 +2,9 @@
 //  MoveableObject.h
 //  HCI571X-CollisionDetectionBasic
 //
+//  This class implements an object class.
+//  The ray intersection test is implemented as part of the MoveableObjectCallback
+//
 //  Created by Dr.-Ing. Rafael Radkowski on 4/1/13.
 //  Copyright (c) 2013 Dr.-Ing. Rafael Radkowski. All rights reserved.
 //

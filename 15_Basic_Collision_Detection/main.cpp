@@ -17,7 +17,10 @@
 
 
 
-
+/*!
+ Class GetWorldCoordOfNodeVisitor
+ Traverses the node path and returns the coordinates of an object in global coordinate frame
+ */
 class GetWorldCoordOfNodeVisitor : public osg::NodeVisitor
 {
 public:
@@ -45,6 +48,9 @@ public:
         }
     }
 
+    /*!
+     Returns a matrix in world coordinate frame
+     */
     osg::Matrixd* getMatrix()
     {
           return wcMatrix ;
@@ -58,6 +64,11 @@ private:
 
 } ;
 
+
+/*!
+ Global functin that returns the world coordinates of a given node 
+ @param node - node for which the world coordinates are requested
+ */
 osg::Matrixd* getWorldCoords( osg::Node* node)
 {
     GetWorldCoordOfNodeVisitor* ncv = new GetWorldCoordOfNodeVisitor();
@@ -156,7 +167,7 @@ int main(int argc, const char * argv[])
     
     root->addChild(createText());
     
-    
+    // The viewer
     osgViewer::Viewer viewer;
     viewer.setSceneData(root);
     viewer.setCameraManipulator(new osgGA::TrackballManipulator);
@@ -170,6 +181,8 @@ int main(int argc, const char * argv[])
     
     while(!viewer.done())
     {
+        // This example code calculates the global coordinates of model 1 and model 0 and
+        // determines whether or not both objects intersect with each other.
         osg::Matrixd* wc0 = getWorldCoords( model0);
         osg::Matrixd* wc1 = getWorldCoords( model1);
         
@@ -179,6 +192,7 @@ int main(int argc, const char * argv[])
         bs0.center() = wc0->getTrans();
         bs1.center() = wc1->getTrans();
         
+        // This line checks whether or not both objects intersect
         if(bs0.intersects(bs1))
         {
             std::cout << "Found intersection "<< std::endl;

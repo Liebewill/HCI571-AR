@@ -16,13 +16,13 @@
 #include <osg/Depth>
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #ifdef WIN32
 #include <windows.h>
 #endif
 
-class HUD : public osg::Group
+class HUD : public osg::Camera
 {
 private:
 	int _screenX;
@@ -40,6 +40,5 @@ public:
     bool addChild(osg::MatrixTransform* node);
 
 private:
-		//VARIABLES OF StateHUD						
-	osg::ref_ptr<osg::CameraNode>	_camera;			
+		
 };
