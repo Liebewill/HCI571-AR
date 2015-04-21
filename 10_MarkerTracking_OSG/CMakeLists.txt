@@ -39,6 +39,8 @@ file(GLOB HCI571_MarkerTracking_OSG_SRC
     "GeometryTypes.h"
     "ARTagNode.h"
     "ARTagNode.cpp"
+	"ExampleGeometry.h"
+	"ExampleGeometry.cpp"
 )
 
 # Create an executable

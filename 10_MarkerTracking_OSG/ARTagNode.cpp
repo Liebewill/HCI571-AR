@@ -40,21 +40,25 @@ ARTagNode::~ARTagNode()
 
 bool ARTagNode::addChild(osg::Node* child )
 {
+    child->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
     return _transform->osg::MatrixTransform::addChild(child);
 }
 
 bool ARTagNode::addChild(osg::Group* child )
 {
+    child->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
     return _transform->osg::MatrixTransform::addChild(child);
 }
 
 bool ARTagNode::addChild(osg::Switch* child )
 {
+    child->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
     return _transform->osg::MatrixTransform::addChild(child);
 }
 
 bool ARTagNode::addChild(osg::MatrixTransform* child )
 {
+    child->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
     return  _transform->osg::MatrixTransform::addChild(child);
 }
 
@@ -87,6 +91,8 @@ void ARTagNode::ARTagNodeCallback::operator()(osg::Node* node, osg::NodeVisitor*
         {
             osg::Matrix transform;
             
+             static osg::Matrix scale = osg::Matrix::scale(10.0,10.0,10.0);
+            
             Matrix44 glMatrix = _detectedMarkers[i].transformation.getInverted().getMat44();
             _matrix.identity();
             _matrix(0,0) =  glMatrix.mat[0][0];
@@ -99,14 +105,15 @@ void ARTagNode::ARTagNodeCallback::operator()(osg::Node* node, osg::NodeVisitor*
             _matrix(2,1) =  glMatrix.mat[1][2];
             _matrix(2,2) =  glMatrix.mat[2][2];
             
-            _matrix(3,0) =  100.0*glMatrix.mat[3][0];
-            _matrix(3,1) =  100.0*glMatrix.mat[3][2];
-            _matrix(3,2) =  -100.0*glMatrix.mat[3][1];
+            _matrix(3,0) =  1.0*glMatrix.mat[3][0];
+            _matrix(3,1) =  1.0*glMatrix.mat[3][2];
+            _matrix(3,2) =  -1.0*glMatrix.mat[3][1];
             
             _matrix(3,3) =  1.0;
+        
             
 			// copy the transformation matrix
-            _transform->setMatrix(_offset * _matrix );
+            _transform->setMatrix( _offset * _matrix * scale  );
             found_marker = true;
 
 

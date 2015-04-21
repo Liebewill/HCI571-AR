@@ -39,6 +39,10 @@
 // Node to attach a matrix to the object
 #include "ARTagNode.h"
 
+// Creates a box
+#include "ExampleGeometry.h"
+
+
 int width = 640;
 int height = 480;
 
@@ -72,6 +76,15 @@ int main(int argc, const char * argv[])
     cv::Mat videoImage;
     cv::Mat videoImageRGB;
     (*capture) >> videoImage;
+	
+	if(videoImage.rows == 0 || videoImage.cols == 0)
+	{
+		cout << "No video image available " << endl;
+		system("pause");
+		capture->release();
+		exit(1);
+	}
+
     cvtColor(videoImage, videoImageRGB, CV_RGBA2RGB);
     
     
@@ -100,7 +113,7 @@ int main(int argc, const char * argv[])
     cv::Mat intrincsicMatrix = Mat::zeros(3,3, CV_32F);
     cv::Mat distCoeffs = Mat::zeros(1, 4, CV_32F);
     
-    FileStorage fs("Camera_Parameter_File.yml", FileStorage::READ);
+    FileStorage fs("../data_art/Camera_Parameter_File.yml", FileStorage::READ);
     fs[ "intrinsic_matrix"] >> intrincsicMatrix;
     fs[ "dist_coeffs"] >> distCoeffs;
     fs.release();
@@ -119,7 +132,8 @@ int main(int argc, const char * argv[])
     // Step 4:
     // Load an object an link this object with the ARToolkit
 #ifdef WIN32
-    osg::Group* loadedModel = (osg::Group*) osgDB::readNodeFile("../data_art/teapot.3ds");
+   // osg::Group* loadedModel = (osg::Group*) osgDB::readNodeFile("../data_art/teapot.3ds");
+	osg::Group* loadedModel =  ExampleGeometry::createBox( 0.8, Vec4(1.0,0.0,0.0,1.0), Vec3(0.0,0.4,0.0) );
 #else
 	osg::Group* loadedModel = (osg::Group*) osgDB::readNodeFile("../data_art/teapot.3ds");
 #endif
