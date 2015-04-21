@@ -9,3 +9,12 @@
 *.build
 15_Basic_Collision_Detection/Debug
 14_Ray-Intersection-Test/Release
+*.vcxproj
+*.filters
+/15_Basic_Collision_Detection/ZERO_CHECK.vcxproj.filters
+/15_Basic_Collision_Detection/ZERO_CHECK.vcxproj
+/15_Basic_Collision_Detection/HCI571_Collision_Detection_Basic.opensdf
+/15_Basic_Collision_Detection/HCI571_Collision_Detection_Basic.sdf
+/15_Basic_Collision_Detection/HCI571_Collision_Detection_Basic.sln
+/15_Basic_Collision_Detection/HCI571_Collision_Detection_Basic.vcxproj
+/15_Basic_Collision_Detection/HCI571_Collision_Detection_Basic.vcxproj.filters

@@ -205,9 +205,11 @@ int main(int argc, const char * argv[])
             text->setText(textStr);
         }
         
-        
-        trans1->setMatrix(osg::Matrix::translate(0.0, 100.0 * sin(40.0*(double)clock()/CLOCKS_PER_SEC), 0.0));
-        
+#ifdef _WIN32        
+        trans1->setMatrix(osg::Matrix::translate(0.0, 100.0 * sin(0.4*(double)clock()/CLOCKS_PER_SEC), 0.0));
+#else
+		trans1->setMatrix(osg::Matrix::translate(0.0, 100.0 * sin(40.0*(double)clock()/CLOCKS_PER_SEC), 0.0));
+#endif
         viewer.frame();
     }
 

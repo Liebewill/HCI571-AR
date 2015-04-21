@@ -68,7 +68,7 @@ if(WIN32 AND NOT APPLE)
 	)
 	
 	
-    target_link_libraries(HCI571X_Collision_Detection_Basic ${OPENGL_LIBRARIES} ${OSG_LIBS} ${OpenCV_LIBS} )
+    target_link_libraries(HCI571_Collision_Detection_Basic ${OPENGL_LIBRARIES} ${OSG_LIBS} ${OpenCV_LIBS} )
 else()
 	set(OSG_LIBS
 		${OSG_LIBRARY}
