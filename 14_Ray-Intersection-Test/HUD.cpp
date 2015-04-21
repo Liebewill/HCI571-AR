@@ -42,7 +42,7 @@ bool HUD::addChild(osg::Group* node)
 {
     if(node != NULL)
     {
-        this->addChild(node);
+        this->osg::Camera::addChild(node);
         return true;
     }
     return false;
@@ -54,7 +54,7 @@ bool HUD::addChild(osg::Switch* node)
 {
     if(node != NULL)
     {
-        this->addChild(node);
+        this->osg::Camera::addChild(node);
         return true;
     }
     return false;
@@ -65,7 +65,7 @@ bool HUD::addChild(osg::Switch* node)
 bool HUD::addChild(osg::MatrixTransform* node){
     if(node != NULL)
     {
-        this->addChild(node);
+        this->osg::Camera::addChild(node);
         return true;
     }
     return false;

@@ -106,8 +106,8 @@ osg::Group* addHUD(void)
     osg::ref_ptr<osgText::Text> text = new osgText::Text();
     text->setText("Press 1 to restart");
     text->setAxisAlignment(osgText::Text::SCREEN);
-    text->setPosition(osg::Vec3(20.0, 950.0, 0.0));
-    text->setCharacterSize(20.0);
+    text->setPosition(osg::Vec3(50.0, 50.0, 0.0));
+    text->setCharacterSize(40.0);
     text->setFont("../data_art/arial.ttf");
     text->setColor(osg::Vec4(1.0, 0.0, 0.0, 0.7));
     
