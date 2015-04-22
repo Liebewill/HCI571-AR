@@ -20,16 +20,17 @@ MarkerDetector::MarkerDetector(int image_width, int image_height, cv::Mat camMat
     _markerSize.height = 100;
     _markerSize.width = 100;
     
+	float corner_distance = _markerSize.height/20.0; // 20 = half of the marker size x factor 10
 
     _minContourLengthAllowed = 100;
     
     bool centerOrigin = true;
     if (centerOrigin)
     {
-        _markerCorners3d.push_back(cv::Point3f(-0.5f,-0.5f,0));
-        _markerCorners3d.push_back(cv::Point3f(+0.5f,-0.5f,0));
-        _markerCorners3d.push_back(cv::Point3f(+0.5f,+0.5f,0));
-        _markerCorners3d.push_back(cv::Point3f(-0.5f,+0.5f,0));
+        _markerCorners3d.push_back(cv::Point3f(-corner_distance,-corner_distance,0));
+        _markerCorners3d.push_back(cv::Point3f(+corner_distance,-corner_distance,0));
+        _markerCorners3d.push_back(cv::Point3f(+corner_distance,+corner_distance,0));
+        _markerCorners3d.push_back(cv::Point3f(-corner_distance,+corner_distance,0));
     }
     else
     {
@@ -40,9 +41,9 @@ MarkerDetector::MarkerDetector(int image_width, int image_height, cv::Mat camMat
     }
     
     _markerCorners2d.push_back(cv::Point2f(0,0));
-    _markerCorners2d.push_back(cv::Point2f(_markerSize.width-1,0));
-    _markerCorners2d.push_back(cv::Point2f(_markerSize.width-1,_markerSize.height-1));
-    _markerCorners2d.push_back(cv::Point2f(0,_markerSize.height-1));
+    _markerCorners2d.push_back(cv::Point2f(_markerSize.width,0));
+    _markerCorners2d.push_back(cv::Point2f(_markerSize.width,_markerSize.height));
+    _markerCorners2d.push_back(cv::Point2f(0,_markerSize.height));
     
     
 }
@@ -108,7 +109,7 @@ void MarkerDetector::findContours(cv::Mat& thresholdImg,
         contoursImage = cv::Scalar(0);
         cv::drawContours(contoursImage, contours, -1, cv::Scalar(255), 2, CV_AA);
         cv::imshow("Contours", contoursImage);
-        cv::waitKey(1);
+        cv::waitKey();
     }
 #endif
 }
@@ -116,7 +117,7 @@ void MarkerDetector::findContours(cv::Mat& thresholdImg,
 
 
 void MarkerDetector::drawLines(cv::Mat& thresholdImg,
-               std::vector<std::vector<cv::Point>>& contours)
+               std::vector<std::vector<cv::Point> >& contours)
 {
     const Scalar color(0, 0, 255 );
     
@@ -150,7 +151,7 @@ void MarkerDetector::drawMarkers(cv::Mat& image,std::vector<Marker>& markers)
 
 
 
-void MarkerDetector::findCandidates (const std::vector<std::vector<cv::Point>>& contours,
+void MarkerDetector::findCandidates (const std::vector<std::vector<cv::Point> >& contours,
                      std::vector<Marker>& detectedMarkers
                      )
 {
@@ -282,15 +283,22 @@ void MarkerDetector::estimatePosition(std::vector<Marker>& detectedMarkers)
     {
         Marker& m = detectedMarkers[i];
         
-        cv::Mat Rvec;
+        cv::Mat Rvec, RvecTemp;
         cv::Mat_<float> Tvec;
         cv::Mat raux,taux;
         cv::solvePnP(_markerCorners3d, m.points, _camMatrix, _distCoeff,raux,taux);
         raux.convertTo(Rvec,CV_32F);
+        raux.convertTo(RvecTemp,CV_32F);
         taux.convertTo(Tvec ,CV_32F);
         
         cv::Mat_<float> rotMat(3,3);
-        cv::Rodrigues(Rvec, rotMat);
+        
+        // Adaption to meet the coordinate system of OSG.
+        RvecTemp.at<float>(0) =Rvec.at<float>(0);
+        RvecTemp.at<float>(1) =Rvec.at<float>(2);
+        RvecTemp.at<float>(2) =-Rvec.at<float>(1);
+        
+        cv::Rodrigues(RvecTemp, rotMat);
         
         // Copy to transformation matrix
         for (int col=0; col<3; col++)
@@ -333,7 +341,7 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Mark
             
             cv::imshow("Source marker",  markerSubImage);
             cv::imshow("Marker after warp", _canonicalImage);
-            cv::waitKey(0);
+            cv::waitKey();
         }
 #endif
         
@@ -391,7 +399,7 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Mark
         }
         
         cv::imshow("Markers refined edges", grayscale * 0.5 + markerCornersMat);
-        cvWaitKey(1);
+        cvWaitKey();
     }
 #endif
     

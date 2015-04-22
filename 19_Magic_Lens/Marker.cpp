@@ -13,8 +13,7 @@
 Marker::Marker()
 {
     id = -1;
-
-
+    
 }
 
 
@@ -59,7 +58,7 @@ cv::Mat Marker::rotate(cv::Mat in)
 
 int Marker::hammDistMarker(cv::Mat bits)
 {
-	int min_dist = 1e5;
+	int min_dist = (int)1e5;
 	int min_idx = -1;
 
 	const int ids1[4][5]=
@@ -88,7 +87,7 @@ int Marker::hammDistMarker(cv::Mat bits)
     
 		for (int y=0;y<5;y++)
 		{
-			int minSum=1e5; //hamming distance to each possible word
+			int minSum=(int)1e5; //hamming distance to each possible word
         
 			for (int p=0;p<4;p++)
 			{
