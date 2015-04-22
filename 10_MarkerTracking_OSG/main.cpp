@@ -133,7 +133,7 @@ int main(int argc, const char * argv[])
     // Load an object an link this object with the ARToolkit
 #ifdef WIN32
    // osg::Group* loadedModel = (osg::Group*) osgDB::readNodeFile("../data_art/teapot.3ds");
-	osg::Group* loadedModel =  ExampleGeometry::createBox( 0.8, Vec4(1.0,0.0,0.0,1.0), Vec3(0.0,0.4,0.0) );
+	osg::Group* loadedModel =  ExampleGeometry::createBox( 80, Vec4(1.0,0.0,0.0,1.0), Vec3(0.0,-40.0,0.0) );
 #else
 	osg::Group* loadedModel = (osg::Group*) osgDB::readNodeFile("../data_art/teapot.3ds");
 #endif
@@ -145,7 +145,7 @@ int main(int argc, const char * argv[])
     {
         // An offset for the teapot
         osg::Matrix offset;
-        offset.makeRotate(1.57,osg::Vec3(1.0,0.0,0.0),
+        offset.makeRotate(0.0,osg::Vec3(1.0,0.0,0.0),
                           0.0, osg::Vec3(0.0,1.0,0.0),
                           0.0, osg::Vec3(0.0,0.0,1.0));
         
@@ -159,21 +159,43 @@ int main(int argc, const char * argv[])
 	{
 		cout << "Object not loaded" << endl;
 	}
+
+
+
+	///////////////////////////////////////////////////////////////////////////////////
+    // Step 6:
+    // Load a camera configuration and apply this configuration on the projection matrix.
+     ///////////////////////////////////////////////////////////////////////////////////
+    // Create a projection matrix to meet the field of view of the camera.
+    Size imageSize;
+    imageSize.width = width;
+    imageSize.height = height;
+
+    // physical size of the sensor.
+    double apertureWidth = 1.0;
+    double apertureHeight = 1.0;
+    double fovx, fovy, focalLength, aspectRatio;
+    Point2d principalPoint;
+    cv::calibrationMatrixValues(intrincsicMatrix, imageSize, apertureWidth, apertureHeight, fovx, fovy, focalLength, principalPoint, aspectRatio);
+    
+    osg::Matrixd projectionmatrix;
+    projectionmatrix.makePerspective(fovy, fovx/fovy, 0.1, 1000.0);
     
     
     ///////////////////////////////////////////////////////////////////////////////////
-    // Step 5:
+    // Step 7:
     // Create a viewer and add a manipulator
     osgViewer::Viewer* viewer = new osgViewer::Viewer();
 	viewer->setSceneData( root );
 	viewer->setUpViewOnSingleScreen(0);
     viewer->setCameraManipulator(new osgGA::TrackballManipulator());
     viewer->getCamera()->setClearColor(osg::Vec4(0.5, 0.5, 1.0, 1.0)) ;
-    
+   // viewer->getCamera()->setViewMatrixAsLookAt(osg::Vec3d(0.0,-10.0, 0.0), osg::Vec3d(0.0,0.0, 0.0), osg::Vec3d(0.0,0.0, 1.0));
+    viewer->getCamera()->setProjectionMatrix(projectionmatrix);
 
     
     ///////////////////////////////////////////////////////////////////////////////////
-    // Step 6:
+    // Step 7:
     // Run the viewer
     while(!viewer->done())
     {

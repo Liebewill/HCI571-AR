@@ -99,15 +99,15 @@ void ARTagNode::ARTagNodeCallback::operator()(osg::Node* node, osg::NodeVisitor*
             _matrix(2,1) =  glMatrix.mat[1][2];
             _matrix(2,2) =  glMatrix.mat[2][2];
             
-            _matrix(3,0) =  1.0*glMatrix.mat[3][0];
-            _matrix(3,1) =  1.0*glMatrix.mat[3][2];
-            _matrix(3,2) =  -1.0*glMatrix.mat[3][1];
+            _matrix(3,0) =  100.0*glMatrix.mat[3][0];
+            _matrix(3,1) =  100.0*glMatrix.mat[3][2];
+            _matrix(3,2) =  -100.0*glMatrix.mat[3][1];
             
             _matrix(3,3) =  1.0;
         
   
 			// copy the transformation matrix
-            _transform->setMatrix( _offset * _matrix * scale  );
+            _transform->setMatrix( _offset * (scale * _matrix) );
             found_marker = true;
 
 

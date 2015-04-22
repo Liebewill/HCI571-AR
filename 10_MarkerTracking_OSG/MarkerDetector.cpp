@@ -20,16 +20,17 @@ MarkerDetector::MarkerDetector(int image_width, int image_height, cv::Mat camMat
     _markerSize.height = 100;
     _markerSize.width = 100;
     
+	float corner_distance = _markerSize.height/20.0; // 20 = half of the marker size x factor 10
 
     _minContourLengthAllowed = 100;
     
     bool centerOrigin = true;
     if (centerOrigin)
     {
-        _markerCorners3d.push_back(cv::Point3f(-0.5f,-0.5f,0));
-        _markerCorners3d.push_back(cv::Point3f(+0.5f,-0.5f,0));
-        _markerCorners3d.push_back(cv::Point3f(+0.5f,+0.5f,0));
-        _markerCorners3d.push_back(cv::Point3f(-0.5f,+0.5f,0));
+        _markerCorners3d.push_back(cv::Point3f(-corner_distance,-corner_distance,0));
+        _markerCorners3d.push_back(cv::Point3f(+corner_distance,-corner_distance,0));
+        _markerCorners3d.push_back(cv::Point3f(+corner_distance,+corner_distance,0));
+        _markerCorners3d.push_back(cv::Point3f(-corner_distance,+corner_distance,0));
     }
     else
     {
