@@ -11,23 +11,19 @@
 
 
 
-ARTagNode::ARTagNode(int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix offset = osg::Matrix::identity())
-{
-    
-    _offset = offset;
-    _matrix = osg::Matrix::identity();
+ARTagNode::ARTagNode(int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix offset)
+{ 
 
     _transform = new osg::MatrixTransform();
-    _transform->setMatrix(_offset * _matrix);
     this->osg::Switch::addChild(_transform);
     this->setAllChildrenOn();
     
     
     // Create the callback
-    _cb = new ARTagNodeCallback(_transform, marker_id, detectedMarkers, _matrix, offset);
+    _cb = new ARTagNodeCallback(_transform, marker_id, detectedMarkers, offset);
     
     this->setUpdateCallback(_cb);
-    
+
 }
 
 
@@ -65,12 +61,11 @@ bool ARTagNode::addChild(osg::MatrixTransform* child )
 
 
 
-
-ARTagNode::ARTagNodeCallback::ARTagNodeCallback(osg::MatrixTransform* transform, int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix& matrix ,osg::Matrix& offset):
-    _transform(transform), _marker_id(marker_id), _detectedMarkers(detectedMarkers), _matrix(matrix),  _offset(offset)
+ARTagNode::ARTagNodeCallback::ARTagNodeCallback(osg::MatrixTransform* transform, int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix& offset):
+    _transform(transform), _marker_id(marker_id), _detectedMarkers(detectedMarkers), _offset(offset)
 {
-    
-
+	_matrix = osg::Matrix::identity();
+    _transform->setMatrix(offset * _matrix);
 }
 
 
@@ -89,9 +84,8 @@ void ARTagNode::ARTagNodeCallback::operator()(osg::Node* node, osg::NodeVisitor*
         
         if(_detectedMarkers[i].id == _marker_id)
         {
-            osg::Matrix transform;
-            
-             static osg::Matrix scale = osg::Matrix::scale(10.0,10.0,10.0);
+			osg::Matrix transform;
+            static osg::Matrix scale = osg::Matrix::scale(10.0,10.0,10.0);
             
             Matrix44 glMatrix = _detectedMarkers[i].transformation.getInverted().getMat44();
             _matrix.identity();
@@ -111,7 +105,7 @@ void ARTagNode::ARTagNodeCallback::operator()(osg::Node* node, osg::NodeVisitor*
             
             _matrix(3,3) =  1.0;
         
-            
+  
 			// copy the transformation matrix
             _transform->setMatrix( _offset * _matrix * scale  );
             found_marker = true;

@@ -29,11 +29,7 @@ class ARTagNode : public osg::Switch
 private:
     
     // The transform node.
-    osg::MatrixTransform*       _transform;
-    
-    osg::Matrix                 _matrix;
-    osg::Matrix                 _offset;
-    
+	osg::ref_ptr<osg::MatrixTransform>       _transform;
     
     
     
@@ -43,13 +39,13 @@ private:
         
         int                     _marker_id;
         std::vector<Marker>&    _detectedMarkers;
-        osg::Matrix&            _matrix;
-        osg::Matrix&            _offset;
+        osg::Matrix			    _matrix;
+        osg::Matrix	            _offset;
         osg::MatrixTransform*   _transform;
         
     public:
         
-        ARTagNodeCallback(osg::MatrixTransform* _transform, int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix& matrix ,osg::Matrix& offset);
+        ARTagNodeCallback(osg::MatrixTransform* _transform, int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix& offset);
         
         
         /*
@@ -63,13 +59,13 @@ private:
     };
     
     
-    ARTagNodeCallback*  _cb;
+	osg::ref_ptr<ARTagNodeCallback>  _cb;
     
     
 public:
     
     
-    ARTagNode(int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix offset);
+    ARTagNode(int marker_id,  std::vector<Marker>& detectedMarkers, osg::Matrix offset  = osg::Matrix::identity());
     ~ARTagNode();
     
     

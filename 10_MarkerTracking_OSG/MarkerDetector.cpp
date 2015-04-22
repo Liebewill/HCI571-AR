@@ -40,9 +40,9 @@ MarkerDetector::MarkerDetector(int image_width, int image_height, cv::Mat camMat
     }
     
     _markerCorners2d.push_back(cv::Point2f(0,0));
-    _markerCorners2d.push_back(cv::Point2f(_markerSize.width-1,0));
-    _markerCorners2d.push_back(cv::Point2f(_markerSize.width-1,_markerSize.height-1));
-    _markerCorners2d.push_back(cv::Point2f(0,_markerSize.height-1));
+    _markerCorners2d.push_back(cv::Point2f(_markerSize.width,0));
+    _markerCorners2d.push_back(cv::Point2f(_markerSize.width,_markerSize.height));
+    _markerCorners2d.push_back(cv::Point2f(0,_markerSize.height));
     
     
 }
