@@ -161,6 +161,10 @@ int main(int argc, const char * argv[])
 	}
 
 
+	ARTagNode* artNode314 = new ARTagNode( 314, detectedMarkers, osg::Matrix::identity() );
+	artNode314->addChild(ExampleGeometry::createBox( 80, Vec4(1.0,0.0,0.0,1.0), Vec3(0.0,-40.0,0.0) ));
+	root->addChild(artNode314);
+
 
 	///////////////////////////////////////////////////////////////////////////////////
     // Step 6:

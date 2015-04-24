@@ -8,12 +8,38 @@
 
 #include "Marker.h"
 
+////////////////////////////////////////////
+// The one and only global vector for marker pattern. 
+vector<Pattern> g_marker_pattern;
 
 
 Marker::Marker()
 {
     id = -1;
+
+	int ids[4][5]=
+    {
+        {1,0,0,0,0},
+        {1,0,1,1,1},
+        {0,1,0,0,1},
+        {0,1,1,1,0}
+    };
+
+	Pattern p1 = Pattern(4, vector<int>(5,2) );
+	copyIntPat2Vec(ids,p1);
+	g_marker_pattern.push_back(p1);
+
+	int ids2[4][5]=
+    {
+        {0,0,0,1,1},
+        {1,0,1,0,0},
+        {1,1,1,1,1},
+        {1,1,0,0,1}
+    };
     
+	Pattern p2 = Pattern(4, vector<int>(5,0) );
+    copyIntPat2Vec(ids2,p2);
+	g_marker_pattern.push_back(p2);
 }
 
 
@@ -21,6 +47,17 @@ Marker::~Marker()
 {
 
 
+}
+
+/*!
+Copies the src pattern to the destination pattern
+*/
+void Marker::copyIntPat2Vec(int src[][5], Pattern& dest)
+{
+	for(int i=0; i<4; i++)
+		for(int j=0; j<5; j++)
+			dest[i][j] = src[i][j];
+	
 }
 
 
@@ -58,38 +95,44 @@ cv::Mat Marker::rotate(cv::Mat in)
 
 int Marker::hammDistMarker(cv::Mat bits)
 {
-    int ids[4][5]=
-    {
-        {1,0,0,0,0},
-        {1,0,1,1,1},
-        {0,1,0,0,1},
-        {0,1,1,1,0}
-    };
-    
-    int dist=0;
-    
-    for (int y=0;y<5;y++)
-    {
-        int minSum=1e5; //hamming distance to each possible word
+
+	static int pattern_num = g_marker_pattern.size();
+	int min_dist = 1e5;
+	int min_id = -1;
+
+	for(int k=0; k<pattern_num; k++)
+	{
+		int dist=0;
+		Pattern patt = g_marker_pattern[k];
+
+		for (int y=0;y<5;y++)
+		{
+			int minSum=1e5; //hamming distance to each possible word
         
-        for (int p=0;p<4;p++)
-        {
-            int sum=0;
-            //now, count
-            for (int x=0;x<5;x++)
-            {
-                sum += bits.at<uchar>(y,x) == ids[p][x] ? 0 : 1;
-            }
+			for (int p=0;p<4;p++)
+			{
+				int sum=0;
+				//now, count
+				for (int x=0;x<5;x++)
+				{
+					//sum += bits.at<uchar>(y,x) == ids[p][x] ? 0 : 1;
+					sum += bits.at<uchar>(y,x) == patt[p][x] ? 0 : 1;
+				}
             
-            if (minSum>sum)
-                minSum=sum;
-        }
+				if (minSum>sum)
+					minSum=sum;
+			}
         
-        //do the and
-        dist += minSum;
-    }
-    
-    return dist;
+			//do the and
+			dist += minSum;
+		}
+		if(dist < min_dist)
+		{
+			min_dist = dist;
+			min_id = k;
+		}
+	}
+    return min_dist;
 }
 
 int Marker::mat2id(const cv::Mat &bits)

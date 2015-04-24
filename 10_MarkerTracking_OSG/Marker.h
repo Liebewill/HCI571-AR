@@ -20,11 +20,21 @@ using namespace cv;
 using namespace std;
 
 
+// The marker pattern
+typedef vector< vector <int> > Pattern;
+
+
 class Marker
 {
+private:
+	/*!
+	Copies the src pattern to the destination pattern
+	*/
+	void copyIntPat2Vec(int src[][5], Pattern& dest);
+
 public:
     
-    
+	
     
     friend bool operator<(const Marker &M1,const Marker&M2);
     friend std::ostream & operator<<(std::ostream &str,const Marker &M);
