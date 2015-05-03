@@ -9,6 +9,7 @@
 #include "ARBookVisitor.h"
 
 
+#define VERBOSE
 
 ARBookVisitor::ARBookVisitor(osg::Matrixf* worldReferenceSystem):
     _worldReferenceSystem(worldReferenceSystem)

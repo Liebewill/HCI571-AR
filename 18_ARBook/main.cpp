@@ -24,6 +24,7 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/nonfree/features2D.hpp>
 
+#include <Windows.h>
 
 //The video background renderer
 #include "VideoRenderer.h"
@@ -297,19 +298,14 @@ osg::Group* createScene(void)
     /////////////////////////////////////////////////////////
     // Load a moveable object
     
-    collider_group->addChild(loadObject("Chevy",  "./../models/cot_chevy_ready.3ds", underground,  50.0, -300.0, 60.0));
     
-    collider_group->addChild(loadObject("Teapot",  "./../models/teapot.3ds", underground,  -50.0, -300.0, 60.0));
     
-    collider_group->addChild(loadObject2("Teapot_Red",  "./../models/teapot_red.3ds", underground,  -100.0, -300.0, 60.0));
     
     
     book = new ARBook(underground);
-    osg::Group* loadedModel = book->addARBookPattern( BOOK_MARKER, "./../models/Polyeader.3ds", "Polyeder", 150.0, -100.0, 0.0 );
     helper->addChild(book);
     
-
-     
+    
 
     /////////////////////////////////////////////////////////
     // Create the AR paddle
