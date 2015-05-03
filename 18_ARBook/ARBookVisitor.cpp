@@ -9,13 +9,12 @@
 #include "ARBookVisitor.h"
 
 
-//#define VERBOSE
 
 ARBookVisitor::ARBookVisitor(osg::Matrixf* worldReferenceSystem):
     _worldReferenceSystem(worldReferenceSystem)
 {
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-    
+    _hierarchyLevel = 0;
     reset();
 }
 

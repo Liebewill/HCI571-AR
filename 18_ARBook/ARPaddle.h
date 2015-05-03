@@ -45,7 +45,7 @@ private:
     
     
     
-    
+    ARTagNode*			_worldReferenceSystemNode;
     
     //------------------------------------
     // Loads and inits the object

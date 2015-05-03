@@ -15,6 +15,8 @@
 #include <osgUtil/LineSegmentIntersector>
 #include <osg/MatrixTransform>
 
+#include <Windows.h>
+
 
 #include "DistanceNodeVisitor.h"
 
@@ -56,6 +58,8 @@ private:
     // The AR marker node which refers to the pointer of the paddle object
     ARTagNode*			_marker_node;
     
+	ARTagNode*			_worldReferenceSystemNode;
+
     
     // The world coordinate reference system
     osg::Matrixf*           _worldReferenceSystem;
@@ -118,6 +122,10 @@ private:
     std::vector<int>        _dirVecRef;
     
     int                     _swipeCount;
+
+	////////////////////////////////////////////////////
+	// sample state
+	bool _collided; 
     
     ////////////////////////////////////////////////////
     // Operation
@@ -250,7 +258,7 @@ public:
      Set the world reference system
      @param: the osg::Matrix object that acts as the reference coordinate system for this paddle. 
      */
-    void setWorldCoordinateRefSystem( osg::Matrixf* ref_system);
+    void setWorldCoordinateRefSystem(  ARTagNode*  worldReferenceSystemNode);
     
     /*!
      This adds the ARBook to this NodeCallback. 

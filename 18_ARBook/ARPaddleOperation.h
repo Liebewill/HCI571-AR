@@ -26,6 +26,6 @@ private:
 public:
     ARPaddleOperation();
     
-    virtual void operate(std::string stateIdentifier, StateParameter* param = NULL);
+    virtual void operate(std::string stateIdentifier, StateParameter* param);
 
 };

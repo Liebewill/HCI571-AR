@@ -313,15 +313,18 @@ osg::Group* createScene(void)
 
     /////////////////////////////////////////////////////////
     // Create the AR paddle
-    {
-        paddle = new ARPaddle(	new ARTagNode( 314, detectedMarkers, osg::Matrix::identity() ),
+    ARTagNode* worldNode = new ARTagNode( 213, detectedMarkers, osg::Matrix::identity());
+	ARTagNode* paddleNode = new ARTagNode( 314, detectedMarkers, osg::Matrix::identity());
+	{
+        paddle = new ARPaddle(	paddleNode,
 								collider_group, book, 
-								new ARTagNode( 213, detectedMarkers, osg::Matrix::identity() ));
+								worldNode );
+
         helper->addChild(paddle);
+		helper->addChild(paddleNode);
+		helper->addChild(worldNode);
 
     }
-    
-
 
     return helper;
 
@@ -333,16 +336,13 @@ osg::Group* createScene(void)
 int main(int argc, const char * argv[])
 {
 
-    
     // Create the root node and add a scene
-    osg::Group* root = new osg::Group();
-    
+    osg::Group* root = new osg::Group();  
     
     ///////////////////////////////////////////////////////////////////////////////////
     // Step 1:
     // Open a video capture device
     cv::VideoCapture* capture = new cv::VideoCapture(0);
-
 
 	
     // Check whether the video camera is available
@@ -350,8 +350,7 @@ int main(int argc, const char * argv[])
 		std::cout << "Error" << std::endl;
 		return -1;
 	}
-
-	    
+ 
     capture->set(CV_CAP_PROP_FRAME_WIDTH, (int)width);
     capture->set(CV_CAP_PROP_FRAME_HEIGHT, (int)height);
     
@@ -373,16 +372,14 @@ int main(int argc, const char * argv[])
     osg::Group* videoCanvas = VideoRenderer::createSzene(videoImageRGB.ptr<uchar>(0), size.width, size.height);
     root->addChild(videoCanvas);
 
-    
-    
-
+  
 	///////////////////////////////////////////////////////////////////////////////////
     // Load the camera calibration parameters
     // output Matrices
     cv::Mat intrincsicMatrix = Mat::zeros(3,3, CV_32F);
     cv::Mat distCoeffs = Mat::zeros(1, 4, CV_32F);
     
-    FileStorage fs("../data_art/Camera_Parameter_File.yml", FileStorage::READ);
+    FileStorage fs("data_art/Camera_Parameter_File.yml", FileStorage::READ);
     fs[ "intrinsic_matrix"] >> intrincsicMatrix;
     fs[ "dist_coeffs"] >> distCoeffs;
     fs.release();
@@ -411,8 +408,8 @@ int main(int argc, const char * argv[])
     imageSize.height = height;
 
     // physical size of the sensor.
-    double apertureWidth = 1.0;
-    double apertureHeight = 1.0;
+    double apertureWidth = 3.2;
+    double apertureHeight = 2.4;
     double fovx, fovy, focalLength, aspectRatio;
     Point2d principalPoint;
     cv::calibrationMatrixValues(intrincsicMatrix, imageSize, apertureWidth, apertureHeight, fovx, fovy, focalLength, principalPoint, aspectRatio);
@@ -426,7 +423,7 @@ int main(int argc, const char * argv[])
     // Create a viewer and add a manipulator
     osgViewer::Viewer* viewer = new osgViewer::Viewer();
 	viewer->setSceneData( root );
-	viewer->setUpViewOnSingleScreen(1);
+	viewer->setUpViewOnSingleScreen(0);
     viewer->getCamera()->setClearColor(osg::Vec4(0.5, 0.5, 1.0, 1.0)) ;
     viewer->getCamera()->setProjectionMatrix(projectionmatrix);
     //viewer->setCameraManipulator(new osgGA::TrackballManipulator);
@@ -438,6 +435,8 @@ int main(int argc, const char * argv[])
     ///////////////////////////////////////////////////////////////////////////////////
     // Step 7:
     // Run the viewer
+
+	// Two transform nodes are created
     while(!viewer->done())
     {
         // Fetch an image
@@ -447,7 +446,6 @@ int main(int argc, const char * argv[])
 		 // Update the marker tracking
         md->findMarkers(videoImageRGB, detectedMarkers, false);
 
-    
         // Run the viewer
         viewer->frame();
         

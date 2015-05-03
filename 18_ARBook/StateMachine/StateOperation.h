@@ -32,7 +32,7 @@ public:
 	 @param stateIdentifier - the indentifier of the state is passed as function
      @param param - the user definied parameter are passed to that function. 
 	 */
-	virtual void operate(std::string stateIdentifier, StateParameter* param = NULL) = 0;
+	virtual void operate(std::string stateIdentifier, StateParameter* param) = 0;
 
 };
 

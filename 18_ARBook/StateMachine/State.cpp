@@ -266,7 +266,7 @@ void State::apply(StateParameter* param)
 {
 	if(this->_stateOperation != NULL)
 	{
-		this->_stateOperation->operate(_stateLabel);
+		this->_stateOperation->operate(_stateLabel,param);
 	}
 	
 }
@@ -278,7 +278,7 @@ void State::onEntry(StateParameter* param)
 {
 	if(this->_entryOperation != NULL)
 	{
-		this->_entryOperation->operate(_stateLabel);
+		this->_entryOperation->operate(_stateLabel,param);
 	}
 }
 
@@ -289,7 +289,7 @@ void State::onExit(StateParameter* param)
 {
 	if(this->_exitOperation != NULL)
 	{
-		this->_exitOperation->operate(_stateLabel);
+		this->_exitOperation->operate(_stateLabel, param);
 	}
 }
 

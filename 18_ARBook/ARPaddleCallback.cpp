@@ -59,6 +59,8 @@ ARPaddleCallback::ARPaddleCallback(osg::Group* intersection_group, ARTagNode* ma
     _withARBook = false;
     _swipeCount = -1;
     _swipeInit = false;
+
+	_collided = false;
     
     createStateMachine();
 }
@@ -110,9 +112,10 @@ void ARPaddleCallback::createStateMachine(void)
  Set the world reference system
  @param: the osg::MatrixTransform node that acts as the reference coordinate system for this paddle.
  */
-void ARPaddleCallback::setWorldCoordinateRefSystem( osg::Matrixf* ref_system)
+void ARPaddleCallback::setWorldCoordinateRefSystem( ARTagNode*  worldReferenceSystemNode)
 {
-    _worldReferenceSystem = ref_system;
+	_worldReferenceSystemNode =worldReferenceSystemNode;
+	_worldReferenceSystem = &_worldReferenceSystemNode->getMatrix();
 }
 
 
@@ -141,6 +144,7 @@ bool ARPaddleCallback::intersect(const osg::Vec3d& start,
         normal = lsi->getIntersections().begin()->getWorldIntersectNormal();
         osg::NodePath path = lsi->getIntersections().begin()->nodePath;
         modelname = path[path.size()-2]->getName();
+		
         return true;
     }
     return false;
@@ -190,8 +194,6 @@ bool ARPaddleCallback::computeDistance(std::string& result, std::string& object)
             app_speed_angle = approachingSpeedAngle;
         }
     }
-    
-    
     
     
     
@@ -286,7 +288,7 @@ bool ARPaddleCallback::computeDistanceARBook(std::string& result, std::string& o
     //std::cout << "Closest objet is " << min_object << " at " << min_distance <<  std::endl;
     
     
-    if(min_distance < 40.0f)
+    if(min_distance < 60.0f)
     {
 
         //g_modelname = min_object;
@@ -295,7 +297,7 @@ bool ARPaddleCallback::computeDistanceARBook(std::string& result, std::string& o
         return true;
         
     }
-    else if(min_distance < 50.0f)
+    else if(min_distance < 80.0f)
     {
         //g_modelname = "-";
         object = "-";
@@ -318,6 +320,8 @@ void ARPaddleCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
     std::string object;
     std::string  result;
+
+	_worldReferenceSystem = &_worldReferenceSystemNode->getMatrix();
     
     // Fetch the current position of the 3D object
     _current_Position = _marker_node->getMatrix().getTrans();
@@ -331,8 +335,9 @@ void ARPaddleCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
     computeLevitation(_worldRefLocation, result);
     _fsm->fire(result, new StateParameter(object));
     
-    // Computer intersections for the select function
-    computeIntersections();
+    // Compute intersections for the select function
+	computeIntersections();
+
     
     // Compute distances for drag & drop
     computeDistance(result, object);
@@ -362,10 +367,7 @@ void ARPaddleCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
     computeSwipe(_worldRefLocation, _worldRefDirection, result);
     _fsm->fire(result, new ARPaddleStateParameters( "", _worldRefLocation, _worldRefDirection ));
     _fsm->fire("ready");
- 
-    
-    
-    
+
     
     nv->traverse(*node);
 }
@@ -400,17 +402,28 @@ bool ARPaddleCallback::computeIntersections(void)
     std::string modelname;
 	if(intersect(start, end, ip, np, modelname))
 	{
-	//	std::cout << "intersect with " << modelname << " : " << ip.x() << " : " << ip.y() << " : " << ip.z()  << std::endl;
-		
-        
+		//std::cout << "intersect with " << modelname << " : " << ip.x() << " : " << ip.y() << " : " << ip.z()  << std::endl;
+
+		if(!_collided)
+		{
+			_collided = true;
+			if(modelname == "Kick")
+				PlaySound(TEXT("Kick-Drum-1.wav"), NULL, SND_ASYNC);
+			else if(modelname == "Snare")
+				PlaySound(TEXT("Hip-Hop-Snare-1.wav"), NULL, SND_ASYNC);
+			else if(modelname == "HiHat")
+				PlaySound(TEXT("Closed-Hi-Hat-1.wav"), NULL, SND_ASYNC);
+		}
+
 	}
     else
     {
         g_modelname = "";
+		_collided = false;
+
     }
     
-    
-
+   
     return true;
     
 }
@@ -519,7 +532,7 @@ bool ARPaddleCallback::calcPaddleWorldLocation(void)
     _worldRefLocation = _world_paddle_relation.getTrans();
     
     // Get the orientation (the up vector) with respect to the world coordinate system
-    osg::Vec3d up = osg::Vec3d(_world_paddle_relation(2,0),_world_paddle_relation(2,1), _world_paddle_relation(2,2)) ;
+    osg::Vec3d up = osg::Vec3d(_world_paddle_relation(2,0), _world_paddle_relation(2,1), _world_paddle_relation(2,2));
         
     // Create a normal up vector
     const osg::Vec3d  up_n = osg::Vec3d(0.0, 0.0, 1.0) ;
