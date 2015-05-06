@@ -157,6 +157,10 @@ bool ARPaddleCallback::intersect(const osg::Vec3d& start,
 bool ARPaddleCallback::computeDistance(std::string& result, std::string& object)
 {
     _intersection_group->accept(*_distVisitor);
+
+
+	// Invert the matrix in world reference coordinates
+    osg::Matrixd wInv = osg::Matrix::inverse(*_worldReferenceSystem);
     
   
     double min_distance = 100000000.0;
@@ -167,22 +171,23 @@ bool ARPaddleCallback::computeDistance(std::string& result, std::string& object)
     int num = _distVisitor->size();
     for ( int i=0; i<num; i++)
     {
-        osg::Vec3 loc1 = _distVisitor->getLocation(i);
+        osg::Matrixd loc1 = _distVisitor->getLocation(i);
         std::string n1 = _distVisitor->getName(i);
         
+		loc1 = loc1 * wInv;
         
         osg::Vec3d pad = _worldRefLocation;
         pad.z() = pad.z() - 30.0;
         
         // Calculates the distance and writes them into the map
-        double dist = calcEuclidDistance(pad, loc1);
+		double dist = calcEuclidDistance(pad, loc1.getTrans());
         _objectDistance[n1] = dist;
         
         double approachingAngle = 0.0;
         double approachingSpeedAngle = 0.0;
         
         // Calculate the approaching direction
-        calcObjectAngle(loc1, pad, &approachingAngle, &approachingSpeedAngle);
+        calcObjectAngle(loc1.getTrans(), pad, &approachingAngle, &approachingSpeedAngle);
         
         
         // Look for the closest object
@@ -403,17 +408,6 @@ bool ARPaddleCallback::computeIntersections(void)
 	if(intersect(start, end, ip, np, modelname))
 	{
 		//std::cout << "intersect with " << modelname << " : " << ip.x() << " : " << ip.y() << " : " << ip.z()  << std::endl;
-
-		if(!_collided)
-		{
-			_collided = true;
-			if(modelname == "Kick")
-				PlaySound(TEXT("Kick-Drum-1.wav"), NULL, SND_ASYNC);
-			else if(modelname == "Snare")
-				PlaySound(TEXT("Hip-Hop-Snare-1.wav"), NULL, SND_ASYNC);
-			else if(modelname == "HiHat")
-				PlaySound(TEXT("Closed-Hi-Hat-1.wav"), NULL, SND_ASYNC);
-		}
 
 	}
     else

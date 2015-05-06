@@ -23,7 +23,7 @@ ARPaddle::ARPaddle(ARTagNode* trackingData, osg::Group* intersection_group, ARTa
     
     if(worldReferenceSystem != NULL)
     {
-		_cb->setWorldCoordinateRefSystem(&worldReferenceSystem->getMatrix());
+		_cb->setWorldCoordinateRefSystem(worldReferenceSystem);
     }
 }
 
@@ -40,7 +40,7 @@ ARPaddle::ARPaddle(ARTagNode* trackingData, osg::Group* intersection_group, osg:
     
     if(worldReferenceSystem != NULL)
     {
-		_cb->setWorldCoordinateRefSystem(&worldReferenceSystem->getMatrix());
+		_cb->setWorldCoordinateRefSystem(worldReferenceSystem);
         
        
     }

@@ -41,7 +41,7 @@ public:
     virtual void apply(osg::Geode &node);
 
     
-    osg::Vec3 getLocation(int idx);
+    osg::Matrixd getLocation(int idx);
     std::string getName(int idx);
     
     /*

@@ -14,7 +14,7 @@
 DistanceNodeVisitor::DistanceNodeVisitor()
 {
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
-    
+    _hierarchyLevel = 0;
     reset();
 }
 
@@ -166,7 +166,7 @@ void DistanceNodeVisitor::reset(void)
 }
 
 
-osg::Vec3 DistanceNodeVisitor::getLocation(int idx)
+osg::Matrixd DistanceNodeVisitor::getLocation(int idx)
 {
     if(idx < _modelList.size() && idx >= 0 )
     {
@@ -185,9 +185,9 @@ osg::Vec3 DistanceNodeVisitor::getLocation(int idx)
             itr++;
         }
         location = result.getTrans();
-        return location;
+        return result;
     }
-    return osg::Vec3d(0.0,0.0,0.0);
+	return osg::Matrix::identity();
 }
 
 std::string DistanceNodeVisitor::getName(int idx)
