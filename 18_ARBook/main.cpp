@@ -298,14 +298,18 @@ osg::Group* createScene(void)
     /////////////////////////////////////////////////////////
     // Load a moveable object
     
+    osg::Group* teapot = loadObject("Teapot", "./../models/teapot.3ds", underground, 150.0, 50.0, 60.0);
     
+
+	//collider_group->addChild(chevy);    
+	collider_group->addChild(teapot);
     
     
     
     book = new ARBook(underground);
     helper->addChild(book);
-    
-    
+    book->addARBookPattern(480, "./../models/teapot.3ds", "teapot2",  150.0, 50.0, 60.0);
+
 
     /////////////////////////////////////////////////////////
     // Create the AR paddle
@@ -375,7 +379,7 @@ int main(int argc, const char * argv[])
     cv::Mat intrincsicMatrix = Mat::zeros(3,3, CV_32F);
     cv::Mat distCoeffs = Mat::zeros(1, 4, CV_32F);
     
-    FileStorage fs("data_art/Camera_Parameter_File.yml", FileStorage::READ);
+    FileStorage fs("../data_art/Camera_Parameter_File.yml", FileStorage::READ);
     fs[ "intrinsic_matrix"] >> intrincsicMatrix;
     fs[ "dist_coeffs"] >> distCoeffs;
     fs.release();

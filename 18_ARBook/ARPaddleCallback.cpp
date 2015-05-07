@@ -177,7 +177,7 @@ bool ARPaddleCallback::computeDistance(std::string& result, std::string& object)
 		loc1 = loc1 * wInv;
         
         osg::Vec3d pad = _worldRefLocation;
-        pad.z() = pad.z() - 30.0;
+        pad.z() = pad.z() + 30.0;
         
         // Calculates the distance and writes them into the map
 		double dist = calcEuclidDistance(pad, loc1.getTrans());
@@ -267,8 +267,13 @@ bool ARPaddleCallback::computeDistanceARBook(std::string& result, std::string& o
         
         osg::Vec3d trans = mat1.getTrans();
         
+
+		osg::Vec3d pad = _worldRefLocation;
+        pad.z() = pad.z() + 30.0;
+
+
         // Calculates the distance and writes them into the map
-        double dist = calcEuclidDistance(_worldRefLocation, trans);
+        double dist = calcEuclidDistance(pad, trans);
         _objectDistance[n1] = dist;
         
         double approachingAngle = 0.0;
@@ -620,21 +625,21 @@ bool  ARPaddleCallback::computeLevitation(osg::Vec3 worldRefLoc, std::string& re
     double max = 0.0;
     for (int i=0; i<8; i++)
     {
-        max += _zPos[i];
+        max += abs(_zPos[i]);
     }
    // std::cout << max << std::endl;
     
     _lastPos =  worldRefLoc[2];
     
     
-    if(max > 20.0)
+    if(max > 0.2)
     {
         result = "take";
         return true;
     }
     
-    
-    result = "-";
+    result = "take";
+    //result = "-";
     return false;
 
 }
